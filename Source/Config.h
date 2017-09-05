@@ -10,11 +10,9 @@ enum class State
 
 struct Config
 {
-    unsigned    windowWidth,
-                windowHeight,
-                simWidth,
+    unsigned    simWidth,
                 simHeight,
-                quadSize;
+                maxGenerations;
     State initialState;
 };
 
