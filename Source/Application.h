@@ -1,35 +1,19 @@
 #ifndef APPLICATION_H_INCLUDED
 #define APPLICATION_H_INCLUDED
 
-#include <SFML/Graphics.hpp>
-#include <vector>
-#include <cstdint>  //uint8_t
-#include <chrono>
-#include <thread>
-
 #include "QuadBoard.h"
 #include "Config.h"
 
-enum class Cell : uint8_t
+#include <SFML/Graphics.hpp>
+#include <vector>
+#include <chrono>
+
+enum class Cell
 {
     Dead,
     Alive
 };
 
-enum class State  : uint8_t
-{
-    Sim,
-    Creating,
-    Paused
-};
-struct CellSave {
-    unsigned x, y;
-    Cell cell;
-
-};
-struct Save {
-    std::vector<CellSave> cells = std::vector<CellSave>();
-};
 class Application
 {
     public:
@@ -44,12 +28,12 @@ class Application
         unsigned getCellIndex   (unsigned x, unsigned y) const;
 
         template<typename F>
-        void cellForEach(F f);
+        void cellForEach(F f) const;
 
         const Config CONFIG;
 
         QuadBoard m_quadBoard;
-        State m_state = State::Creating;
+        State m_state;
 
         sf::RenderWindow m_window;
         sf::View m_view;
@@ -57,11 +41,10 @@ class Application
         sf::Text m_text;
 
         std::vector<Cell> m_cells;
-        std::vector<Save> saves = std::vector<Save>();
 };
 
 template<typename F>
-void Application::cellForEach(F f)
+void Application::cellForEach(F f) const
 {
     for (unsigned y = 0; y < CONFIG.simHeight; y++)
     {

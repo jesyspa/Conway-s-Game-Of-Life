@@ -1,7 +1,7 @@
-#include <iostream>
-
 #include "Application.h"
 #include "Config.h"
+
+#include <iostream>
 
 /**
   * Rules:
@@ -16,16 +16,11 @@
   *  - Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
   */
 
-int main()
+int main(int argc, char** argv)
 {
     Config config;
 
-    char option;
-    std::cout << "Would you like to use default config? [Y/N]: ";
-    std::cin >> option;
-    option = std::toupper(option);
-
-    if (option == 'N')
+    if (argc > 1)
     {
         std::cout << "Enter window width: ";
         std::cin >> config.windowWidth;
@@ -42,15 +37,18 @@ int main()
 
         config.simWidth  =  config.windowWidth  / config.quadSize;
         config.simHeight =  config.windowHeight / config.quadSize;
+
+        config.initialState = State::Creating;
     }
     else
     {
-        config.quadSize     = 8;
+        config.quadSize     = 1;
         config.windowWidth  = 1024;
-        config.windowHeight = 768;
+        config.windowHeight = 1024;
 
         config.simWidth     =  config.windowWidth  / config.quadSize;
         config.simHeight    =  config.windowHeight / config.quadSize;
+        config.initialState =  State::Sim;
     }
 
     Application app(config);
