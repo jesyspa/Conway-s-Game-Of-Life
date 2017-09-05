@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 
     config.simWidth       = 1280;
     config.simHeight      = 720;
-    config.maxGenerations = 1000;
+    config.maxGenerations = 100;
 
     Application app(config);
     app.run();
