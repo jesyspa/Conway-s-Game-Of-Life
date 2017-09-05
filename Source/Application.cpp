@@ -1,5 +1,6 @@
 #include "Application.h"
 
+#include <iostream>
 #include <random>
 #include <ctime>
 
@@ -19,23 +20,10 @@ sf::Color& getCellColour(Cell cell)
 Application::Application(const Config& config)
 :   CONFIG      (config)
 ,   m_quadBoard (config)
-,   m_state     (config.initialState)
 ,   m_window    ({config.simWidth, config.simHeight}, "Conway's Game of Life")
 ,   m_view      ({0, 0}, {(float)config.simWidth, (float)config.simHeight})
 ,   m_cells     (config.simWidth * config.simHeight)
 {
-    m_font.loadFromFile         ("font/arial.ttf");
-    m_text.setFont              (m_font);
-    m_text.setFillColor         (sf::Color::White);
-    m_text.setOutlineColor      (sf::Color::Black);
-    m_text.setOutlineThickness  (3);
-    m_text.setCharacterSize     (20);
-    m_text.setPosition          (5, 5);
-    m_text.setString            (std::string("Click cell to change it to alive/ dead.\n") +
-                                 std::string("Press \"C\" to clear the cells\n") +
-                                 std::string("Press \"T\" to toggle the grid\n") +
-                                 std::string("Press \"Space\" when you are ready."));
-
     std::mt19937 rng (std::time(nullptr));
     cellForEach([&](unsigned x, unsigned y)
     {
@@ -51,51 +39,28 @@ Application::Application(const Config& config)
 
 void Application::run()
 {
-    bool changed = false;
-    int offset = 1;
     int generations = 0;
-    sf::Clock clock;
+    sf::Clock perf;
     while (m_window.isOpen())
     {
         m_window.clear();
         m_window.setView(m_view);
 
-        switch (m_state)
+        if (m_running)
         {
-            case State::Creating:
-                mouseInput();
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-                {
-                    m_state = State::Sim;
-                }
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::C))
-                {
-                    cellForEach([&](unsigned x, unsigned y)
-                    {
-                        m_cells[getCellIndex(x, y)] = Cell::Dead;
-                        m_quadBoard.setQuadColour(x, y, deadColour);
-                    });
-                }
-                break;
+            generations += 1;
+            updateWorld();
+            updateWorld();
 
-            case State::Sim:
-                generations += 1;
-                m_text.setString("Generation: " + std::to_string(generations));
-                updateWorld();
-
-                if (generations > CONFIG.maxGenerations)
-                    m_state = State::Done;
-                break;
-
-            case State::Done:
-                m_text.setString("Done!");
-                break;
+            if (generations > CONFIG.maxGenerations)
+            {
+                m_running = false;
+                auto totalTime = perf.getElapsedTime();
+                std::cout << "Done in " << totalTime.asMilliseconds() << "ms.\n";
+            }
         }
 
         m_quadBoard.draw(m_window);
-        m_window.setView(m_window.getDefaultView());
-        m_window.draw(m_text);
-
         m_window.display();
 
         handleEvents();
@@ -167,36 +132,4 @@ void Application::handleEvents()
 unsigned Application::getCellIndex(unsigned x, unsigned y) const
 {
     return y * CONFIG.simWidth + x;
-}
-
-void Application::mouseInput()
-{
-    static sf::Clock delay;
-    if (delay.getElapsedTime().asSeconds() > 0.2)
-    {
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-        {
-            delay.restart();
-            auto mousePosition = sf::Mouse::getPosition(m_window);
-            auto adjustedMousePosition = m_window.mapCoordsToPixel({(float)mousePosition.x,
-                                                                    (float)mousePosition.y});
-            auto x = adjustedMousePosition.x;
-            auto y = adjustedMousePosition.y;
-
-            if (x < 0 || x > (int)m_window.getSize().x ||
-                y < 0 || y > (int)m_window.getSize().y)
-            {
-                return;
-            }
-
-            //Switch cell type
-            auto& cell = m_cells[getCellIndex(x, y)];
-            cell =  cell == Cell::Alive ?
-                        Cell::Dead :
-                        Cell::Alive;
-
-            //Set new colour
-            m_quadBoard.setQuadColour(x, y, getCellColour(cell));
-        }
-    }
 }
