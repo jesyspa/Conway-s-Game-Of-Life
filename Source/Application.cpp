@@ -71,40 +71,26 @@ void Application::run()
 
 void Application::updateWorld()
 {
-    cellForEach([&](unsigned x, unsigned y)
-    {
-        unsigned count = 0;
-        for (int nX = -1; nX <= 1; nX++)    //check neighbours
-        for (int nY = -1; nY <= 1; nY++)
-        {
-            int newX = nX + x;
-            int newY = nY + y;
+    auto read_p = jumpToStart(m_cells.data());
+    auto write_p = jumpToStart(m_newCells.data());
 
-            auto cell = m_cells[getCellIndex(newX, newY)];
-            if (cell == Cell::Alive)
-                count++;
+    for (unsigned y = 0; y < CONFIG.simHeight; ++y) {
+        for (unsigned x = 0; x < CONFIG.simWidth; ++x) {
+            unsigned count = neighbourCount(read_p);
+
+            if (count == 3)
+                *write_p = Cell::Alive;
+            else if (count == 2 && *read_p == Cell::Alive)
+                *write_p = Cell::Alive;
+            else
+                *write_p = Cell::Dead;
+
+            write_p = right(write_p);
+            read_p = right(read_p);
         }
-
-        auto cell           = m_cells[getCellIndex(x, y)];
-        auto& updateCell    = m_newCells[getCellIndex(x, y)];
-        updateCell = cell;
-        switch (cell)
-        {
-            case Cell::Alive:
-                if (count < 3 || count > 4)
-                {
-                    updateCell = Cell::Dead;
-                }
-                break;
-
-            case Cell::Dead:
-                if (count == 3)
-                {
-                    updateCell = Cell::Alive;
-                }
-                break;
-        }
-    });
+        write_p = nextRow(write_p);
+        read_p = nextRow(read_p);
+    }
     m_cells.swap(m_newCells);
 }
 
@@ -137,4 +123,34 @@ void Application::updateQuads()
 unsigned Application::dataSize() const
 {
     return (CONFIG.simWidth + 2) * (CONFIG.simHeight + 2);
+}
+
+Cell* Application::jumpToStart(Cell* p) const {
+    return right(down(p));
+}
+
+Cell* Application::nextRow(Cell* p) const {
+    return p + 2;
+}
+
+Cell* Application::up(Cell* p) const {
+    return p - CONFIG.simHeight - 2;
+}
+
+Cell* Application::down(Cell* p) const {
+    return p + CONFIG.simHeight + 2;
+}
+
+Cell* Application::left(Cell* p) const {
+    return p - 1;
+}
+
+Cell* Application::right(Cell* p) const {
+    return p + 1;
+}
+
+unsigned Application::neighbourCount(Cell* p) const {
+    return (int)*left(up(p)) + (int)*up(p) + (int)*right(up(p))
+        + (int)*left(p) + (int)*right(p)
+        + (int)*left(down(p)) + (int)*down(p) + (int)*right(down(p));
 }

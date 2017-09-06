@@ -43,6 +43,14 @@ class Application
 
         std::vector<Cell> m_cells;
         std::vector<Cell> m_newCells;
+
+        Cell* jumpToStart(Cell*) const;
+        Cell* nextRow(Cell*) const;
+        Cell* up(Cell*) const;
+        Cell* down(Cell*) const;
+        Cell* left(Cell*) const;
+        Cell* right(Cell*) const;
+        unsigned neighbourCount(Cell*) const;
 };
 
 template<typename F>
