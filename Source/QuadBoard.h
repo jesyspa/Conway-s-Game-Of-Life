@@ -18,9 +18,7 @@ class QuadBoard
 
     private:
         unsigned getQuadIndex(unsigned x, unsigned y) const;
-        void makeGrid();
 
-        std::vector<sf::Vertex>     m_grid;
         std::vector<sf::Vertex>     m_pixels;
 
         const Config CONFIG;
