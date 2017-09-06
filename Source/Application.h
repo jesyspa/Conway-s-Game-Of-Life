@@ -42,6 +42,7 @@ class Application
         sf::View m_view;
 
         std::vector<Cell> m_cells;
+        std::vector<Cell> m_newCells;
 };
 
 template<typename F>

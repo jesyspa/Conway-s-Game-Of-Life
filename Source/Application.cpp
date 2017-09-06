@@ -25,6 +25,7 @@ Application::Application(const Config& config)
 ,   m_window    ({config.windowWidth, config.windowHeight}, "Conway's Game of Life")
 ,   m_view      ({0, 0}, {(float)config.windowWidth, (float)config.windowHeight})
 ,   m_cells     (dataSize())
+,   m_newCells  (dataSize())
 {
     std::mt19937 rng (std::time(nullptr));
     cellForEach([&](unsigned x, unsigned y)
@@ -70,7 +71,6 @@ void Application::run()
 
 void Application::updateWorld()
 {
-    std::vector<Cell> newCells(dataSize());
     cellForEach([&](unsigned x, unsigned y)
     {
         unsigned count = 0;
@@ -86,7 +86,7 @@ void Application::updateWorld()
         }
 
         auto cell           = m_cells[getCellIndex(x, y)];
-        auto& updateCell    = newCells[getCellIndex(x, y)];
+        auto& updateCell    = m_newCells[getCellIndex(x, y)];
         updateCell = cell;
         switch (cell)
         {
@@ -105,7 +105,7 @@ void Application::updateWorld()
                 break;
         }
     });
-    m_cells = std::move(newCells);
+    m_cells.swap(m_newCells);
 }
 
 
