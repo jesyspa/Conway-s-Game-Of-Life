@@ -26,6 +26,8 @@ class Application
         void updateWorld        ();
         void updateQuads        ();
         unsigned getCellIndex   (unsigned x, unsigned y) const;
+        unsigned dataSize       () const;
+
 
         template<typename F>
         void cellForEach(F f) const;

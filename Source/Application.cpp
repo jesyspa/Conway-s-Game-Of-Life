@@ -24,7 +24,7 @@ Application::Application(const Config& config)
 ,   m_quadBoard (config)
 ,   m_window    ({config.windowWidth, config.windowHeight}, "Conway's Game of Life")
 ,   m_view      ({0, 0}, {(float)config.windowWidth, (float)config.windowHeight})
-,   m_cells     (config.simWidth * config.simHeight)
+,   m_cells     (dataSize())
 {
     std::mt19937 rng (std::time(nullptr));
     cellForEach([&](unsigned x, unsigned y)
@@ -70,7 +70,7 @@ void Application::run()
 
 void Application::updateWorld()
 {
-    std::vector<Cell> newCells(CONFIG.simWidth * CONFIG.simHeight);
+    std::vector<Cell> newCells(dataSize());
     cellForEach([&](unsigned x, unsigned y)
     {
         unsigned count = 0;
@@ -80,12 +80,6 @@ void Application::updateWorld()
             int newX = nX + x;
             int newY = nY + y;
 
-            if (newX == -1 || newX == (int)CONFIG.simWidth ||
-                newY == -1 || newY == (int)CONFIG.simHeight || //out of bounds
-                (nX == 0 && nY == 0)) //Cell itself
-            {
-                continue;
-            }
             auto cell = m_cells[getCellIndex(newX, newY)];
             if (cell == Cell::Alive)
                 count++;
@@ -97,7 +91,7 @@ void Application::updateWorld()
         switch (cell)
         {
             case Cell::Alive:
-                if (count < 2 || count > 3)
+                if (count < 3 || count > 4)
                 {
                     updateCell = Cell::Dead;
                 }
@@ -130,7 +124,7 @@ void Application::handleEvents()
 
 unsigned Application::getCellIndex(unsigned x, unsigned y) const
 {
-    return y * CONFIG.simWidth + x;
+    return (y + 1) * (CONFIG.simWidth + 2) + x + 1;
 }
 
 void Application::updateQuads()
@@ -138,4 +132,9 @@ void Application::updateQuads()
     for (unsigned y = 0; y < CONFIG.visibleSimHeight; ++y)
         for (unsigned x = 0; x < CONFIG.visibleSimWidth; ++x)
             m_quadBoard.setQuadColour(x, y, getCellColour(m_cells[getCellIndex(x + m_xOffset, y + m_yOffset)]));
+}
+
+unsigned Application::dataSize() const
+{
+    return (CONFIG.simWidth + 2) * (CONFIG.simHeight + 2);
 }
