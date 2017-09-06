@@ -50,6 +50,7 @@ void Application::run()
         {
             generations += 1;
             updateWorld();
+            updateWorld();
 
             if (generations > CONFIG.maxGenerations)
             {
