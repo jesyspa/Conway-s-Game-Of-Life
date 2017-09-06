@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 project(game)
 
 set (CMAKE_CXX_STANDARD 14)
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -g")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -g -Wall -Wextra -Werror")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
 
 

@@ -16,7 +16,7 @@
   *  - Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
   */
 
-int main(int argc, char** argv)
+int main(int argc, char**)
 {
     Config config;
 

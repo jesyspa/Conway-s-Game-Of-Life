@@ -42,8 +42,7 @@ Application::Application(const Config& config)
 
 void Application::run()
 {
-    bool changed = false;
-    int generations = 0;
+    unsigned generations = 0;
     sf::Clock clock;
     while (m_window.isOpen())
     {
