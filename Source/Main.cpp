@@ -22,6 +22,12 @@ int main(int argc, char** argv)
 
     if (argc > 1)
     {
+        std::cout << "Enter simulation width: ";
+        std::cin >> config.simWidth;
+
+        std::cout << "Enter simulation height: ";
+        std::cin >> config.simHeight;
+
         std::cout << "Enter window width: ";
         std::cin >> config.windowWidth;
 
@@ -31,25 +37,28 @@ int main(int argc, char** argv)
         std::cout << "Enter cell size: ";
         std::cin >> config.quadSize;
 
+        std::cout << "Enter number of generations to run for: ";
+        std::cin >> config.maxGenerations;
+
         //Make it so that the cells fit in the window
         config.windowWidth -= config.windowWidth   % config.quadSize;
         config.windowHeight -= config.windowHeight % config.quadSize;
 
-        config.simWidth  =  config.windowWidth  / config.quadSize;
-        config.simHeight =  config.windowHeight / config.quadSize;
-
-        config.initialState = State::Creating;
+        config.windowWidth  =  std::min(config.simWidth * config.quadSize, config.windowWidth);
+        config.windowHeight =  std::min(config.simHeight * config.quadSize, config.windowHeight);
     }
     else
     {
-        config.quadSize     = 1;
-        config.windowWidth  = 1024;
-        config.windowHeight = 1024;
-
-        config.simWidth     =  config.windowWidth  / config.quadSize;
-        config.simHeight    =  config.windowHeight / config.quadSize;
-        config.initialState =  State::Sim;
+        config.quadSize       = 4;
+        config.simWidth       = 1024;
+        config.simHeight      = 1024;
+        config.windowWidth    = 1280;
+        config.windowHeight   = 720;
+        config.maxGenerations = 1000;
     }
+
+    config.visibleSimWidth = config.windowWidth / config.quadSize;
+    config.visibleSimHeight = config.windowHeight / config.quadSize;
 
     Application app(config);
     app.run();

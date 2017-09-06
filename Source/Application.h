@@ -24,21 +24,20 @@ class Application
     private:
         void handleEvents       ();
         void updateWorld        ();
-        void mouseInput         ();
+        void updateQuads        ();
         unsigned getCellIndex   (unsigned x, unsigned y) const;
 
         template<typename F>
         void cellForEach(F f) const;
 
         const Config CONFIG;
+        unsigned m_xOffset, m_yOffset;
 
         QuadBoard m_quadBoard;
-        State m_state;
+        bool m_running = true;
 
         sf::RenderWindow m_window;
         sf::View m_view;
-        sf::Font m_font;
-        sf::Text m_text;
 
         std::vector<Cell> m_cells;
 };
