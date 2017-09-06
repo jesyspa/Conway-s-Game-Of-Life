@@ -3,10 +3,13 @@
 QuadBoard::QuadBoard(const Config& config)
 :   CONFIG  (config)
 {
-    m_pixels.reserve(config.simWidth * config.simHeight * 4);
+    m_pixels.reserve(config.visibleSimWidth * config.visibleSimHeight * 4);
+    for (unsigned y = 0; y < config.visibleSimHeight; ++y)
+        for (unsigned x = 0; x < config.visibleSimWidth; ++x)
+            addQuad(x, y);
 }
 
-void QuadBoard::addQuad(unsigned x, unsigned y, sf::Color& colour)
+void QuadBoard::addQuad(unsigned x, unsigned y)
 {
     sf::Vertex topLeft;
     sf::Vertex topRight;
@@ -21,10 +24,10 @@ void QuadBoard::addQuad(unsigned x, unsigned y, sf::Color& colour)
     bottomLeft  .position = {pixelX,                    pixelY + CONFIG.quadSize};
     bottomRight .position = {pixelX + CONFIG.quadSize,  pixelY + CONFIG.quadSize};
 
-    topLeft     .color = colour;
-    topRight    .color = colour;
-    bottomLeft  .color = colour;
-    bottomRight .color = colour;
+    topLeft     .color = sf::Color();
+    topRight    .color = sf::Color();
+    bottomLeft  .color = sf::Color();
+    bottomRight .color = sf::Color();
 
     m_pixels.push_back(topLeft);
     m_pixels.push_back(bottomLeft);
@@ -49,6 +52,6 @@ void QuadBoard::draw(sf::RenderWindow& window)
 
 unsigned QuadBoard::getQuadIndex(unsigned x, unsigned y) const
 {
-    return (y * CONFIG.simWidth + x) * 4;
+    return (y * CONFIG.visibleSimWidth + x) * 4;
 }
 

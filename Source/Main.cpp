@@ -50,11 +50,11 @@ int main(int argc, char**)
     else
     {
         config.quadSize       = 4;
-        config.simWidth       = 1024;
-        config.simHeight      = 1024;
+        config.simWidth       = 2048;
+        config.simHeight      = 2048;
         config.windowWidth    = 1280;
         config.windowHeight   = 720;
-        config.maxGenerations = 1000;
+        config.maxGenerations = 200;
     }
 
     config.visibleSimWidth = config.windowWidth / config.quadSize;

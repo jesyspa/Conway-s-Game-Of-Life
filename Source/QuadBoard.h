@@ -11,12 +11,12 @@ class QuadBoard
     public:
         QuadBoard(const Config& config);
 
-        void addQuad        (unsigned x, unsigned y, sf::Color& colour);
         void setQuadColour  (unsigned x, unsigned y, sf::Color& colour);
 
         void draw(sf::RenderWindow& window);
 
     private:
+        void addQuad         (unsigned x, unsigned y);
         unsigned getQuadIndex(unsigned x, unsigned y) const;
 
         std::vector<sf::Vertex>     m_pixels;

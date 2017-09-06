@@ -32,7 +32,6 @@ Application::Application(const Config& config)
         std::uniform_int_distribution<int> dist(0, 1);
         auto& cell = m_cells[getCellIndex(x, y)];
         cell = (Cell)dist(rng);
-        m_quadBoard.addQuad(x, y, getCellColour(cell));
     });
 
     m_view.setCenter(m_window.getSize().x / 2,
@@ -53,9 +52,11 @@ void Application::run()
             generations += 1;
             updateWorld();
 
-            if (generations > CONFIG.maxGenerations) {
+            if (generations >= CONFIG.maxGenerations) {
                 m_running = false;
-                std::cout << "Time taken: " << clock.getElapsedTime().asMilliseconds() << '\n';
+                auto time = 1. * clock.getElapsedTime().asMilliseconds();
+                std::cout << "Time taken per generation: " <<  time / generations << " milliseconds\n";
+                std::cout << "Time taken per cell: " <<  time / generations / CONFIG.simWidth / CONFIG.simHeight * 1'000'000 << " nanoseconds\n";
             }
         }
 
@@ -109,8 +110,6 @@ void Application::updateWorld()
                 }
                 break;
         }
-
-        m_quadBoard.setQuadColour(x, y, getCellColour(updateCell));
     });
     m_cells = std::move(newCells);
 }
