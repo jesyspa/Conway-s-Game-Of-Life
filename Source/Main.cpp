@@ -20,9 +20,26 @@ int main(int argc, char** argv)
 {
     Config config;
 
-    config.simWidth       = 1280;
-    config.simHeight      = 720;
-    config.maxGenerations = 1000;
+    if (argc > 1)
+    {
+        std::cout << "Enter window width: ";
+        std::cin >> config.simWidth;
+
+        std::cout << "Enter window height: ";
+        std::cin >> config.simHeight;
+
+        std::cout << "Enter generation count: ";
+        std::cin >> config.maxGenerations;
+
+        config.initialState = State::Creating;
+    }
+    else
+    {
+        config.simWidth       = 1280;
+        config.simHeight      = 720;
+        config.maxGenerations = 1000;
+        config.initialState   = State::Sim;
+    }
 
     Application app(config);
     app.run();

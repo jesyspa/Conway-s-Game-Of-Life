@@ -33,10 +33,12 @@ class Application
         const Config CONFIG;
 
         QuadBoard m_quadBoard;
-        bool m_running = true;
+        State m_state;
 
         sf::RenderWindow m_window;
         sf::View m_view;
+        sf::Font m_font;
+        sf::Text m_text;
 
         std::vector<Cell> m_cells;
 };
