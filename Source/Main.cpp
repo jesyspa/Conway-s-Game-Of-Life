@@ -23,22 +23,32 @@ int main(int argc, char** argv)
     if (argc > 1)
     {
         std::cout << "Enter window width: ";
-        std::cin >> config.simWidth;
+        std::cin >> config.windowWidth;
 
         std::cout << "Enter window height: ";
-        std::cin >> config.simHeight;
+        std::cin >> config.windowHeight;
 
-        std::cout << "Enter generation count: ";
-        std::cin >> config.maxGenerations;
+        std::cout << "Enter cell size: ";
+        std::cin >> config.quadSize;
+
+        //Make it so that the cells fit in the window
+        config.windowWidth -= config.windowWidth   % config.quadSize;
+        config.windowHeight -= config.windowHeight % config.quadSize;
+
+        config.simWidth  =  config.windowWidth  / config.quadSize;
+        config.simHeight =  config.windowHeight / config.quadSize;
 
         config.initialState = State::Creating;
     }
     else
     {
-        config.simWidth       = 1280;
-        config.simHeight      = 720;
-        config.maxGenerations = 1000;
-        config.initialState   = State::Sim;
+        config.quadSize     = 1;
+        config.windowWidth  = 1024;
+        config.windowHeight = 1024;
+
+        config.simWidth     =  config.windowWidth  / config.quadSize;
+        config.simHeight    =  config.windowHeight / config.quadSize;
+        config.initialState =  State::Sim;
     }
 
     Application app(config);

@@ -14,13 +14,13 @@ void QuadBoard::addQuad(unsigned x, unsigned y, sf::Color& colour)
     sf::Vertex bottomLeft;
     sf::Vertex bottomRight;
 
-    float pX = x;
-    float pY = y;
+    float pixelX = x * CONFIG.quadSize;
+    float pixelY = y * CONFIG.quadSize;
 
-    topLeft     .position = {pX,      pY};
-    topRight    .position = {pX + 1,  pY};
-    bottomLeft  .position = {pX,      pY + 1};
-    bottomRight .position = {pX + 1,  pY + 1};
+    topLeft     .position = {pixelX,                    pixelY};
+    topRight    .position = {pixelX + CONFIG.quadSize,  pixelY};
+    bottomLeft  .position = {pixelX,                    pixelY + CONFIG.quadSize};
+    bottomRight .position = {pixelX + CONFIG.quadSize,  pixelY + CONFIG.quadSize};
 
     topLeft     .color = colour;
     topRight    .color = colour;
@@ -69,8 +69,8 @@ void QuadBoard::makeGrid()
         sf::Vertex top;
         sf::Vertex bottom;
 
-        float pX = x;
-        float pY = CONFIG.simHeight;
+        float pX = x * CONFIG.quadSize;
+        float pY = CONFIG.simHeight * CONFIG.quadSize;
 
         top     .position = {pX, 0};
         bottom  .position = {pX, pY};
@@ -84,8 +84,8 @@ void QuadBoard::makeGrid()
         sf::Vertex left;
         sf::Vertex right;
 
-        float pX = CONFIG.simWidth;
-        float pY = y;
+        float pX = CONFIG.simWidth * CONFIG.quadSize;
+        float pY = y * CONFIG.quadSize;
 
         left    .position = {0,  pY};
         right   .position = {pX, pY};

@@ -20,8 +20,8 @@ Application::Application(const Config& config)
 :   CONFIG      (config)
 ,   m_quadBoard (config)
 ,   m_state     (config.initialState)
-,   m_window    ({config.simWidth, config.simHeight}, "Conway's Game of Life")
-,   m_view      ({0, 0}, {(float)config.simWidth, (float)config.simHeight})
+,   m_window    ({config.windowWidth, config.windowHeight}, "Conway's Game of Life")
+,   m_view      ({0, 0}, {(float)config.windowWidth, (float)config.windowHeight})
 ,   m_cells     (config.simWidth * config.simHeight)
 {
     m_font.loadFromFile         ("font/arial.ttf");
@@ -54,6 +54,7 @@ void Application::run()
     bool changed = false;
     int offset = 1;
     int generations = 0;
+    int const max_generations = 1000;
     sf::Clock clock;
     while (m_window.isOpen())
     {
@@ -83,7 +84,7 @@ void Application::run()
                 m_text.setString("Generation: " + std::to_string(generations));
                 updateWorld();
 
-                if (generations > CONFIG.maxGenerations)
+                if (generations > max_generations)
                     m_state = State::Done;
                 break;
 
@@ -189,14 +190,18 @@ void Application::mouseInput()
                 return;
             }
 
+            //Convert mouse/ screen coordinates to cell coordinates
+            int newX = x / CONFIG.quadSize;
+            int newY = y / CONFIG.quadSize;
+
             //Switch cell type
-            auto& cell = m_cells[getCellIndex(x, y)];
+            auto& cell = m_cells[getCellIndex(newX, newY)];
             cell =  cell == Cell::Alive ?
                         Cell::Dead :
                         Cell::Alive;
 
             //Set new colour
-            m_quadBoard.setQuadColour(x, y, getCellColour(cell));
+            m_quadBoard.setQuadColour(newX, newY, getCellColour(cell));
         }
     }
 }
